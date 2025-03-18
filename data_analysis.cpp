@@ -56,12 +56,12 @@ void save_average_to_buffer(float average) {
 
 void set_fes_parameters(int fatigue_level) {
     switch (fatigue_level) {
-        case 0:  pulseOptions = {10, 100, 20}; break;
-        case 1:  pulseOptions = {15, 120, 25}; break;
-        case 2:  pulseOptions = {20, 140, 30}; break;
-        case 4:  pulseOptions = {30, 160, 35}; break;
-        case 8:  pulseOptions = {40, 180, 40}; break;
-        case 10: pulseOptions = {50, 200, 50}; break;
+        case 0:  pulseOptions = {10, 100, 25}; break;
+        case 1:  pulseOptions = {10, 120, 25}; break;
+        case 2:  pulseOptions = {10, 140, 25}; break;
+        case 4:  pulseOptions = {10, 160, 25}; break;
+        case 8:  pulseOptions = {10, 180, 25}; break;
+        case 10: pulseOptions = {10, 200, 25}; break;
         default: pulseOptions = {0, 0, 0}; break;
     }
     
