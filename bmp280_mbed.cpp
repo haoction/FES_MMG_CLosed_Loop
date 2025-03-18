@@ -69,10 +69,10 @@ float BMP280_MBED::readTemperature() {
     return ((_t_fine * 5 + 128) >> 8) / 100.0;
 }
 
-float BMP280_MBED::readPressure() {
+void BMP280_MBED::readPressure(int16_t* pressureArray) {
     int64_t var1, var2, p;
     readTemperature(); // Must be called first
-    
+
     int32_t adc_P = read24(BMP280_REGISTER_PRESSUREDATA);
     adc_P >>= 4;
 
@@ -84,15 +84,25 @@ float BMP280_MBED::readPressure() {
            ((var1 * (int64_t)_calib.dig_P2) << 12);
     var1 = (((((int64_t)1) << 47) + var1)) * ((int64_t)_calib.dig_P1) >> 33;
 
-    if (var1 == 0) return 0;
-    
+    if (var1 == 0) {
+        pressureArray[0] = 0;
+        pressureArray[1] = 0;
+        return;
+    }
+
     p = 1048576 - adc_P;
     p = (((p << 31) - var2) * 3125) / var1;
     var1 = (((int64_t)_calib.dig_P9) * (p >> 13) * (p >> 13)) >> 25;
     var2 = (((int64_t)_calib.dig_P8) * p) >> 19;
     
     p = ((p + var1 + var2) >> 8) + (((int64_t)_calib.dig_P7) << 4);
-    return (float)p / 256;
+
+    // Scale the pressure by 100 to retain precision
+    int32_t scaledPressure = (int32_t)(p / 256.0 * 100);
+
+    // Store in int16_t array (splitting into two parts)
+    pressureArray[0] = (int16_t)(scaledPressure >> 16); // Most significant 16 bits
+    pressureArray[1] = (int16_t)(scaledPressure & 0xFFFF); // Least significant 16 bits
 }
 
 void BMP280_MBED::write8(uint8_t reg, uint8_t value) {
