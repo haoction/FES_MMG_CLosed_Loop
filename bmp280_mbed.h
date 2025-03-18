@@ -72,7 +72,7 @@ public:
     BMP280_MBED(I2C* i2c, uint8_t address = BMP280_ADDRESS);
     bool begin();
     float readTemperature();
-    float readPressure();
+    void readPressure(int16_t *data);
     void setSampling(sensor_mode mode = MODE_NORMAL,
                     sensor_sampling tempSampling = SAMPLING_X16,
                     sensor_sampling pressSampling = SAMPLING_X16,
