@@ -73,8 +73,15 @@ void set_fes_parameters(int fatigue_level) {
 
 void process_sensor_data(BMP280_MBED& sensor) {
     if (data_count < DATA_POINTS) {
-        int pressure = sensor.readPressure() * 100;
+        int16_t pressureArray[2];  // Array to store pressure data
+        sensor.readPressure(pressureArray);  // Call the modified function
+
+        // Reconstruct the pressure value from two int16_t values
+        int32_t pressure = (static_cast<int32_t>(pressureArray[0]) << 16) | 
+                            static_cast<uint16_t>(pressureArray[1]);
+
         printf("Pressure: %d Pa\r\n", pressure);
+        
         sensor_data[data_count] = pressure;
         data_count++;
         ThisThread::sleep_for(10);
